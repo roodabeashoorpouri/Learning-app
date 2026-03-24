@@ -2,6 +2,8 @@ import React, { createContext, useContext, useMemo, useState } from 'react';
 
 export type NativeLanguage = 'en' | 'fa';
 export type Gender = 'male' | 'female' | 'other' | '';
+export type AgeBracket = '' | '3-12' | '12-25' | '25-45' | '45+';
+export type LearningLevel = '' | 'beginner' | 'intermediate' | 'advanced';
 
 export type AuthState = {
   username: string;
@@ -10,6 +12,8 @@ export type AuthState = {
   purpose: string;
   dailyGoal: number;
   age: number;
+  ageBracket: AgeBracket;
+  learningLevel: LearningLevel;
   gender: Gender;
 };
 
@@ -25,6 +29,8 @@ const initialAuthState: AuthState = {
   purpose: '',
   dailyGoal: 10,
   age: 0,
+  ageBracket: '',
+  learningLevel: '',
   gender: '',
 };
 

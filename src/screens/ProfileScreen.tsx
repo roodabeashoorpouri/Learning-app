@@ -3,8 +3,13 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { useAuth } from '../context/AuthContext';
 
+function formatLearningLevel(level: string): string {
+  if (!level) return '-';
+  return level.charAt(0).toUpperCase() + level.slice(1);
+}
+
 export function ProfileScreen() {
-  const { username, email, nativeLanguage, purpose, dailyGoal, age, gender } = useAuth();
+  const { username, email, nativeLanguage, purpose, dailyGoal, age, ageBracket, learningLevel, gender } = useAuth();
 
   return (
     <View style={styles.container}>
@@ -25,8 +30,11 @@ export function ProfileScreen() {
         <Text style={styles.rowLabel}>Daily Goal</Text>
         <Text style={styles.rowValue}>{dailyGoal}</Text>
 
+        <Text style={styles.rowLabel}>Level</Text>
+        <Text style={styles.rowValue}>{formatLearningLevel(learningLevel)}</Text>
+
         <Text style={styles.rowLabel}>Age</Text>
-        <Text style={styles.rowValue}>{age || '-'}</Text>
+        <Text style={styles.rowValue}>{ageBracket || age || '-'}</Text>
 
         <Text style={styles.rowLabel}>Gender</Text>
         <Text style={styles.rowValue}>{gender || '-'}</Text>
