@@ -4,7 +4,7 @@ A cross-platform language-learning app built with [Expo](https://expo.dev/) and 
 
 ## Features
 
-- **Authentication screen** — Collects username, email, and learning preferences (stored in app state via React context).
+- **Authentication screen** — Collects username, , and learning preferences (stored in app state via React context).
 - **Onboarding** — Stack flow after auth before entering the main app.
 - **Main tabs**
   - **Student Book** — Lesson and reading content.
