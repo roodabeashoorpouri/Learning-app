@@ -14,6 +14,8 @@ import {
 } from '@expo-google-fonts/vazirmatn';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useAuth } from '../context/AuthContext';
+
 /** Cream paper + dark blue ink workbook palette */
 const PAPER = '#f7f4ec';
 const PAPER_DEEP = '#efe8dc';
@@ -85,8 +87,10 @@ function SectionTitle({ children, n }) {
   );
 }
 
-function DialogueTurn({ line, isRight, persianFont }) {
+function DialogueTurn({ line, isRight, persianFont, nativeLanguage }) {
   const align = isRight ? 'flex-end' : 'flex-start';
+  const isEnglish = nativeLanguage === 'en';
+  const isPersian = nativeLanguage === 'fa';
   return (
     <View style={[styles.turnWrap, { alignItems: align }]}>
       <View style={[styles.turnCard, isRight && styles.turnCardRight]}>
@@ -97,17 +101,21 @@ function DialogueTurn({ line, isRight, persianFont }) {
         <Text style={styles.lineArmenian}>{line.armenian}</Text>
         <Text style={styles.linePhonetic}>{line.phonetic}</Text>
         <View style={styles.dividerThin} />
-        <Text style={styles.lineEnglish}>{line.english}</Text>
-        <View style={[styles.persianBlock, { alignSelf: 'stretch' }]}>
-          <Text
-            style={[
-              styles.linePersian,
-              persianFont ? { fontFamily: persianFont } : null,
-            ]}
-          >
-            {line.persian}
-          </Text>
-        </View>
+        {isEnglish && (
+          <Text style={styles.lineEnglish}>{line.english}</Text>
+        )}
+        {isPersian && (
+          <View style={[styles.persianBlock, { alignSelf: 'stretch' }]}>
+            <Text
+              style={[
+                styles.linePersian,
+                persianFont ? { fontFamily: persianFont } : null,
+              ]}
+            >
+              {line.persian}
+            </Text>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -119,6 +127,9 @@ function DialogueTurn({ line, isRight, persianFont }) {
  */
 export function LessonWorkbookScreen() {
   const insets = useSafeAreaInsets();
+  const { nativeLanguage } = useAuth();
+  const isEnglish = nativeLanguage === 'en';
+  const isPersian = nativeLanguage === 'fa';
   const [fontsLoaded] = useFonts({
     Vazirmatn_400Regular,
     Vazirmatn_700Bold,
@@ -184,6 +195,7 @@ export function LessonWorkbookScreen() {
               line={line}
               isRight={line.speaker === 'John'}
               persianFont={persianBody}
+              nativeLanguage={nativeLanguage}
             />
           ))}
         </View>
@@ -192,7 +204,8 @@ export function LessonWorkbookScreen() {
         <View style={styles.section}>
           <SectionTitle n={2}>The Vocabulary Spotlight (Point & Learn)</SectionTitle>
           <Text style={styles.sectionHint}>
-            Tap a dot on the scene to see the word in Armenian, English, and Persian.
+            {isEnglish && 'Tap a dot on the scene to see the word in Armenian and English.'}
+            {isPersian && 'روی یک نقطه روی صحنه ضربه بزنید تا کلمه را به ارمنی و فارسی ببینید.'}
           </Text>
           <View style={styles.sceneFrame}>
             <View style={[styles.illustrationPlaceholder, styles.scenePlaceholder]}>
@@ -220,15 +233,19 @@ export function LessonWorkbookScreen() {
           {activeHotspot ? (
             <View style={styles.hotspotCard}>
               <Text style={styles.hotspotHy}>{activeHotspot.label.hy}</Text>
-              <Text style={styles.hotspotEn}>{activeHotspot.label.en}</Text>
-              <Text
-                style={[
-                  styles.hotspotFa,
-                  persianBold ? { fontFamily: persianBold } : null,
-                ]}
-              >
-                {activeHotspot.label.fa}
-              </Text>
+              {isEnglish && (
+                <Text style={styles.hotspotEn}>{activeHotspot.label.en}</Text>
+              )}
+              {isPersian && (
+                <Text
+                  style={[
+                    styles.hotspotFa,
+                    persianBold ? { fontFamily: persianBold } : null,
+                  ]}
+                >
+                  {activeHotspot.label.fa}
+                </Text>
+              )}
             </View>
           ) : (
             <Text style={styles.hotspotHintMuted}>Tap a colored dot on the picture.</Text>
@@ -251,19 +268,27 @@ export function LessonWorkbookScreen() {
               <Text style={styles.playGlyph}>▶</Text>
             </Pressable>
             <View style={styles.listeningCopyCol}>
-              <Text style={styles.listeningLabel}>Instruction (English)</Text>
-              <Text style={styles.listeningEn}>{LISTENING_COPY.english}</Text>
-              <Text style={[styles.listeningLabel, styles.listeningLabelFa]}>
-                دستور (فارسی)
-              </Text>
-              <Text
-                style={[
-                  styles.listeningFa,
-                  persianBody ? { fontFamily: persianBody } : null,
-                ]}
-              >
-                {LISTENING_COPY.persian}
-              </Text>
+              {isEnglish && (
+                <>
+                  <Text style={styles.listeningLabel}>Instruction (English)</Text>
+                  <Text style={styles.listeningEn}>{LISTENING_COPY.english}</Text>
+                </>
+              )}
+              {isPersian && (
+                <>
+                  <Text style={[styles.listeningLabel, styles.listeningLabelFa]}>
+                    دستور (فارسی)
+                  </Text>
+                  <Text
+                    style={[
+                      styles.listeningFa,
+                      persianBody ? { fontFamily: persianBody } : null,
+                    ]}
+                  >
+                    {LISTENING_COPY.persian}
+                  </Text>
+                </>
+              )}
               <Text style={styles.audioStub}>
                 {audioReady ? 'Audio loaded.' : 'Audio file: connect URI in code (placeholder).'}
               </Text>

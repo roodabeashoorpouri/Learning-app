@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   I18nManager,
   KeyboardAvoidingView,
@@ -13,7 +13,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { useAuth, type NativeLanguage } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import type { RootStackParamList } from '../components/navigation/types';
 import {
   findUserByEmailOrUsername,
@@ -60,15 +60,8 @@ export function AuthScreen() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [signInIdentifier, setSignInIdentifier] = useState('');
-  const [nativeLanguage, setNativeLanguage] = useState<NativeLanguage>('en');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-
-  useEffect(() => {
-    const isRTL = nativeLanguage === 'fa';
-    I18nManager.allowRTL(isRTL);
-    I18nManager.forceRTL(isRTL);
-  }, [nativeLanguage]);
 
   const canSignUp = useMemo(
     () => username.trim().length > 0 && email.trim().length > 0 && !busy,
@@ -167,22 +160,6 @@ export function AuthScreen() {
               editable={!busy}
             />
 
-            <Text style={styles.fieldLabel}>Native language</Text>
-            <View style={styles.langRow}>
-              <Pressable
-                onPress={() => setNativeLanguage('en')}
-                style={[styles.langChip, nativeLanguage === 'en' && styles.langChipActive]}
-              >
-                <Text style={[styles.langChipText, nativeLanguage === 'en' && styles.langChipTextActive]}>EN</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => setNativeLanguage('fa')}
-                style={[styles.langChip, nativeLanguage === 'fa' && styles.langChipActive]}
-              >
-                <Text style={[styles.langChipText, nativeLanguage === 'fa' && styles.langChipTextActive]}>Persian</Text>
-              </Pressable>
-            </View>
-
             <Pressable
               style={[styles.submitPrimary, !canSignUp && styles.submitDisabled]}
               disabled={!canSignUp}
@@ -205,12 +182,12 @@ export function AuthScreen() {
                   await registerUser({
                     username: trimmedUser,
                     email: trimmedEmail,
-                    nativeLanguage,
+                    nativeLanguage: 'en',
                   });
                   updateAuth({
                     username: trimmedUser,
                     email: trimmedEmail,
-                    nativeLanguage,
+                    nativeLanguage: 'en',
                     purpose: '',
                     dailyGoal: 10,
                     age: 0,
@@ -399,32 +376,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: INK,
     backgroundColor: '#fdfcfa',
-  },
-  langRow: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 4,
-    marginBottom: 8,
-  },
-  langChip: {
-    flex: 1,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: ACCENT_LINE,
-    paddingVertical: 12,
-    alignItems: 'center',
-    backgroundColor: '#fdfcfa',
-  },
-  langChipActive: {
-    backgroundColor: INK,
-  },
-  langChipText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: INK,
-  },
-  langChipTextActive: {
-    color: PAPER,
   },
   submitPrimary: {
     marginTop: 16,

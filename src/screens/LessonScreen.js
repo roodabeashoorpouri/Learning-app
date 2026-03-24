@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useAuth } from '../context/AuthContext';
 import { vocabulary } from '../data/vocabulary';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -138,7 +139,10 @@ const guideStyles = StyleSheet.create({
   },
 });
 
-function Flashcard({ item, stack }) {
+function Flashcard({ item, stack, nativeLanguage }) {
+  const isEnglish = nativeLanguage === 'en';
+  const isPersian = nativeLanguage === 'fa';
+
   return (
     <View style={[styles.card, { width: CARD_WIDTH }]}>
       <View style={styles.armenianBlock}>
@@ -147,44 +151,52 @@ function Flashcard({ item, stack }) {
       </View>
 
       <View style={stack ? styles.translationsStack : styles.translationsRow}>
-        <View
-          style={[
-            styles.translationCol,
-            stack && styles.translationColFull,
-            styles.ltrCol,
-          ]}
-        >
-          <Text style={styles.colLabel}>English</Text>
-          <Text style={styles.englishText}>{item.English_Mean}</Text>
-        </View>
-
-        {!stack && <View style={styles.divider} />}
-
-        <View
-          style={[styles.translationCol, stack && styles.translationColFull]}
-        >
-          <Text style={[styles.colLabel, styles.labelRtl]}>فارسی</Text>
-          <View style={styles.rtlInner}>
-            <Text style={styles.persianMean}>{item.Persian_Mean}</Text>
-            <Text style={styles.persianPhonetic}>{item.Persian_Phonetic}</Text>
+        {isEnglish && (
+          <View
+            style={[
+              styles.translationCol,
+              stack && styles.translationColFull,
+              styles.ltrCol,
+            ]}
+          >
+            <Text style={styles.colLabel}>English</Text>
+            <Text style={styles.englishText}>{item.English_Mean}</Text>
           </View>
-        </View>
+        )}
+
+        {isEnglish && isPersian && !stack && <View style={styles.divider} />}
+
+        {isPersian && (
+          <View
+            style={[styles.translationCol, stack && styles.translationColFull]}
+          >
+            <Text style={[styles.colLabel, styles.labelRtl]}>فارسی</Text>
+            <View style={styles.rtlInner}>
+              <Text style={styles.persianMean}>{item.Persian_Mean}</Text>
+              <Text style={styles.persianPhonetic}>{item.Persian_Phonetic}</Text>
+            </View>
+          </View>
+        )}
       </View>
 
       <View style={styles.guides}>
-        <GuideRow name="Sarah" role="English tip">
-          <Text style={styles.tipEn}>
-            Think of this as: “{item.English_Mean}” — link it to the Armenian
-            sounds above.
-          </Text>
-        </GuideRow>
-        <GuideRow name="John" role="Persian tip" alignEnd>
-          <View style={styles.rtlInner}>
-            <Text style={styles.tipFa}>
-              معنی: {item.Persian_Mean} — تلفظ: {item.Persian_Phonetic}
+        {isEnglish && (
+          <GuideRow name="Sarah" role="English tip">
+            <Text style={styles.tipEn}>
+              Think of this as: "{item.English_Mean}" — link it to the Armenian
+              sounds above.
             </Text>
-          </View>
-        </GuideRow>
+          </GuideRow>
+        )}
+        {isPersian && (
+          <GuideRow name="John" role="Persian tip" alignEnd>
+            <View style={styles.rtlInner}>
+              <Text style={styles.tipFa}>
+                معنی: {item.Persian_Mean} — تلفظ: {item.Persian_Phonetic}
+              </Text>
+            </View>
+          </GuideRow>
+        )}
       </View>
     </View>
   );
@@ -192,6 +204,7 @@ function Flashcard({ item, stack }) {
 
 export function LessonScreen() {
   const insets = useSafeAreaInsets();
+  const { nativeLanguage } = useAuth();
   const listRef = useRef(null);
   const [index, setIndex] = useState(0);
   const stack = SCREEN_WIDTH < STACK_BREAKPOINT;
@@ -219,8 +232,8 @@ export function LessonScreen() {
   }, []);
 
   const renderItem = useCallback(
-    ({ item }) => <Flashcard item={item} stack={stack} />,
-    [stack],
+    ({ item }) => <Flashcard item={item} stack={stack} nativeLanguage={nativeLanguage} />,
+    [stack, nativeLanguage],
   );
 
   return (

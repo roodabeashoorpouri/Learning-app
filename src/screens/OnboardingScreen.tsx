@@ -272,6 +272,7 @@ export function OnboardingScreen() {
                   onPress={() => {
                     setNativeLanguage('en');
                     updateAuth({ nativeLanguage: 'en' });
+                    void updateStoredUser(authEmail, { nativeLanguage: 'en' });
                     scheduleAdvanceFromStep(0);
                   }}
                   className={`rounded-2xl border p-4 ${
@@ -283,7 +284,7 @@ export function OnboardingScreen() {
                       nativeLanguage === 'en' ? 'text-white' : 'text-slate-900'
                     }`}
                   >
-                    English (EN)
+                    English
                   </Text>
                   <Text
                     className={`mt-1 text-sm ${nativeLanguage === 'en' ? 'text-blue-100' : 'text-slate-600'}`}
@@ -296,6 +297,7 @@ export function OnboardingScreen() {
                   onPress={() => {
                     setNativeLanguage('fa');
                     updateAuth({ nativeLanguage: 'fa' });
+                    void updateStoredUser(authEmail, { nativeLanguage: 'fa' });
                     scheduleAdvanceFromStep(0);
                   }}
                   className={`rounded-2xl border p-4 ${
@@ -305,7 +307,7 @@ export function OnboardingScreen() {
                   <Text
                     className={`text-lg font-bold ${nativeLanguage === 'fa' ? 'text-white' : 'text-slate-900'}`}
                   >
-                    Persian (FA)
+                    Persian
                   </Text>
                   <Text
                     className={`mt-1 text-sm ${nativeLanguage === 'fa' ? 'text-blue-100' : 'text-slate-600'}`}
