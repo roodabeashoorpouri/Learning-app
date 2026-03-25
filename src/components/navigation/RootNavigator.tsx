@@ -6,6 +6,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthScreen } from '../../screens/AuthScreen';
 import { OnboardingStackNavigator } from './OnboardingStackNavigator.tsx';
 import { MainTabNavigator } from './MainTabNavigator.tsx';
+import { PracticeSessionScreen } from '../../screens/PracticeSessionScreen';
+import { PracticeResultScreen } from '../../screens/PracticeResultScreen';
 import type { RootStackParamList } from './types';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -17,6 +19,16 @@ export function RootNavigator() {
         <RootStack.Screen name="Auth" component={AuthScreen} />
         <RootStack.Screen name="OnboardingStack" component={OnboardingStackNavigator} />
         <RootStack.Screen name="MainTabNavigator" component={MainTabNavigator} />
+        <RootStack.Screen
+          name="PracticeSession"
+          component={PracticeSessionScreen}
+          options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }}
+        />
+        <RootStack.Screen
+          name="PracticeResult"
+          component={PracticeResultScreen}
+          options={{ presentation: 'fullScreenModal', animation: 'fade' }}
+        />
       </RootStack.Navigator>
     </NavigationContainer>
   );

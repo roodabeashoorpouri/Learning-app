@@ -1,0 +1,233 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+    <defs>
+        <!-- Soft Drop Shadow for modern feel -->
+        <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.08"/>
+        </filter>
+        <filter id="soft-shadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.05"/>
+        </filter>
+
+        <!-- Gradients -->
+        <linearGradient id="bubbleGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#48BB78"/>
+            <stop offset="100%" stop-color="#38A169"/>
+        </linearGradient>
+        <linearGradient id="bubbleGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#4299E1"/>
+            <stop offset="100%" stop-color="#3182CE"/>
+        </linearGradient>
+
+        <!-- Base Styles -->
+        <style>
+            .font-main { font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif; }
+            .font-bold { font-weight: 800; }
+            .font-medium { font-weight: 600; }
+        </style>
+    </defs>
+
+    <!-- Background Base -->
+    <rect width="800" height="600" fill="#F8FAFC"/>
+
+    <!-- Organic Background Blobs -->
+    <path d="M 120 180 C 250 50, 600 80, 700 250 C 800 450, 550 580, 350 550 C 150 520, -50 350, 120 180 Z" fill="#EBF8FF"/>
+    <circle cx="680" cy="120" r="50" fill="#FEFCBF" opacity="0.6"/>
+    <circle cx="100" cy="480" r="80" fill="#EDF2F7" opacity="0.8"/>
+
+    <!-- Decorative Background Elements (Plus signs and sparkles) -->
+    <g stroke="#A0AEC0" stroke-width="3" stroke-linecap="round" opacity="0.5">
+        <path d="M 95 300 L 105 300 M 100 295 L 100 305"/>
+        <path d="M 725 220 L 735 220 M 730 215 L 730 225"/>
+        <path d="M 450 500 L 460 500 M 455 495 L 455 505"/>
+    </g>
+    <g fill="#F6AD55" opacity="0.7">
+        <path d="M 140 100 L 143 108 L 151 111 L 143 114 L 140 122 L 137 114 L 129 111 L 137 108 Z"/>
+        <path d="M 650 380 L 652 385 L 657 387 L 652 389 L 650 394 L 648 389 L 643 387 L 648 385 Z"/>
+    </g>
+
+    <!-- Ground Shadows -->
+    <ellipse cx="260" cy="510" rx="45" ry="8" fill="#CBD5E0"/>
+    <ellipse cx="540" cy="510" rx="45" ry="8" fill="#CBD5E0"/>
+
+    <!-- Center Translation Icons (Language Exchange) -->
+    <g transform="translate(0, 30)">
+        <!-- Connecting dashed line -->
+        <path d="M 330 180 C 370 230, 430 230, 470 180" stroke="#CBD5E0" stroke-width="3" stroke-dasharray="8,8" fill="none"/>
+        
+        <!-- Bubble A (Green) -->
+        <path d="M 360 210 L 410 210 L 410 250 L 380 250 L 360 270 L 360 250 L 360 210 Z" fill="url(#bubbleGrad1)" filter="url(#shadow)"/>
+        <text x="385" y="238" class="font-main font-bold" font-size="22" fill="#FFFFFF" text-anchor="middle">A</text>
+        
+        <!-- Bubble B (Blue) -->
+        <path d="M 440 230 L 390 230 L 390 270 L 410 270 L 430 290 L 430 270 L 440 270 Z" fill="url(#bubbleGrad2)" filter="url(#shadow)"/>
+        <text x="415" y="258" class="font-main font-bold" font-size="22" fill="#FFFFFF" text-anchor="middle">あ</text>
+    </g>
+
+    <!-- ========================================== -->
+    <!-- BOY CHARACTER (Left)                       -->
+    <!-- ========================================== -->
+    <g id="Boy">
+        <!-- Right Leg (Back) -->
+        <path d="M 265 370 L 280 495" stroke="#2C5282" stroke-width="24" stroke-linecap="round"/>
+        <path d="M 280 495 L 305 495" stroke="#1A202C" stroke-width="20" stroke-linecap="round"/>
+
+        <!-- Right Arm (Back) -->
+        <path d="M 265 250 L 300 310 L 330 300" stroke="#2B6CB0" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="330" cy="300" r="9" fill="#FBD38D"/>
+
+        <!-- Torso -->
+        <path d="M 255 250 L 255 370" stroke="#4299E1" stroke-width="56" stroke-linecap="round"/>
+        <!-- Undershirt detail -->
+        <path d="M 245 235 L 265 235" stroke="#E2E8F0" stroke-width="8" stroke-linecap="round"/>
+
+        <!-- Left Leg (Front) -->
+        <path d="M 245 370 L 240 495" stroke="#2B6CB0" stroke-width="24" stroke-linecap="round"/>
+        <path d="M 240 495 L 265 495" stroke="#2D3748" stroke-width="20" stroke-linecap="round"/>
+
+        <!-- Head & Neck -->
+        <path d="M 255 200 L 255 230" stroke="#FBD38D" stroke-width="16" stroke-linecap="round"/>
+        <circle cx="255" cy="180" r="35" fill="#FBD38D"/>
+        
+        <!-- Face Details -->
+        <circle cx="270" cy="175" r="4" fill="#2D3748"/> <!-- Eye -->
+        <rect x="260" y="165" width="20" height="16" rx="6" stroke="#2B6CB0" stroke-width="3" fill="none"/> <!-- Glasses Frame -->
+        <line x1="250" y1="173" x2="260" y2="173" stroke="#2B6CB0" stroke-width="3"/> <!-- Glasses Earpiece -->
+        <path d="M 275 195 Q 280 200, 285 195" stroke="#C05621" stroke-width="2.5" stroke-linecap="round" fill="none"/> <!-- Smile -->
+        <circle cx="265" cy="188" r="6" fill="#F56565" opacity="0.3"/> <!-- Blush -->
+        
+        <!-- Hair -->
+        <g fill="#2D3748">
+            <!-- Back hair -->
+            <path d="M 218 162 Q 205 185 225 205 Q 235 205 245 180 Z"/>
+            <!-- Front tuft slightly over forehead under the cap -->
+            <path d="M 265 170 Q 280 170 275 180 Q 260 175 260 165 Z"/>
+        </g>
+
+        <!-- Cap -->
+        <g id="BoyCap">
+            <!-- Dome -->
+            <path d="M 218 160 A 38 34 0 0 1 292 160 Z" fill="#ED8936"/>
+            <!-- Lower rim band -->
+            <path d="M 218 160 L 292 160 L 292 164 L 218 164 Z" fill="#DD6B20"/>
+            <!-- Brim -->
+            <path d="M 275 162 L 318 162 A 6 6 0 0 1 318 170 L 265 170 Z" fill="#DD6B20"/>
+            <!-- Top Button -->
+            <circle cx="255" cy="126" r="5" fill="#DD6B20"/>
+        </g>
+
+        <!-- Left Arm (Front) -->
+        <path d="M 245 250 L 280 320 L 330 320" stroke="#4299E1" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="330" cy="320" r="9" fill="#FBD38D"/>
+
+        <!-- Language Book -->
+        <g transform="rotate(15 330 320)">
+            <rect x="310" y="290" width="40" height="50" rx="4" fill="#DD6B20" filter="url(#soft-shadow)"/>
+            <rect x="315" y="292" width="30" height="46" rx="2" fill="#FFFFFF"/>
+            <text x="330" y="318" class="font-main font-bold" font-size="20" fill="#DD6B20" text-anchor="middle">Aa</text>
+            <line x1="320" y1="328" x2="340" y2="328" stroke="#E2E8F0" stroke-width="2" stroke-linecap="round"/>
+        </g>
+    </g>
+
+
+    <!-- ========================================== -->
+    <!-- GIRL CHARACTER (Right)                     -->
+    <!-- ========================================== -->
+    <g id="Girl">
+        <!-- Left Leg (Back) -->
+        <path d="M 535 370 L 520 495" stroke="#702459" stroke-width="22" stroke-linecap="round"/>
+        <path d="M 520 495 L 495 495" stroke="#4A5568" stroke-width="18" stroke-linecap="round"/>
+
+        <!-- Left Arm (Back) -->
+        <path d="M 535 250 L 500 310 L 480 280" stroke="#C53030" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="480" cy="280" r="8" fill="#D68A59"/>
+
+        <!-- Backpack Body (Behind Torso) -->
+        <g id="Backpack_Body">
+            <!-- Top Handle -->
+            <path d="M 565 255 C 565 230, 585 230, 585 255" stroke="#D69E2E" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <!-- Main Bag Shadow / Right side -->
+            <rect x="570" y="255" width="45" height="95" rx="15" fill="#D69E2E"/>
+            <!-- Main Bag Front -->
+            <rect x="565" y="255" width="40" height="95" rx="15" fill="#ECC94B"/>
+            <!-- Side Pocket -->
+            <rect x="595" y="280" width="15" height="55" rx="5" fill="#D69E2E"/>
+            <!-- Zipper line -->
+            <path d="M 575 260 L 575 340" stroke="#D69E2E" stroke-width="3" stroke-linecap="round"/>
+        </g>
+
+        <!-- Torso -->
+        <path d="M 545 250 L 545 370" stroke="#F56565" stroke-width="52" stroke-linecap="round"/>
+
+        <!-- Backpack Strap (Over Torso) -->
+        <path d="M 540 240 Q 515 280 545 350" stroke="#D69E2E" stroke-width="8" fill="none" stroke-linecap="round"/>
+
+        <!-- Right Leg (Front) -->
+        <path d="M 555 370 L 560 495" stroke="#97266D" stroke-width="22" stroke-linecap="round"/>
+        <path d="M 560 495 L 535 495" stroke="#4A5568" stroke-width="18" stroke-linecap="round"/>
+
+        <!-- Head & Neck -->
+        <path d="M 545 200 L 545 230" stroke="#D68A59" stroke-width="14" stroke-linecap="round"/>
+        <circle cx="545" cy="180" r="32" fill="#D68A59"/>
+        
+        <!-- Face Details -->
+        <circle cx="530" cy="175" r="4" fill="#2D3748"/> <!-- Eye -->
+        <path d="M 526 172 Q 528 170, 532 173" stroke="#2D3748" stroke-width="2" fill="none"/> <!-- Eyelash -->
+        <path d="M 525 195 Q 520 200, 515 195" stroke="#7B341E" stroke-width="2.5" stroke-linecap="round" fill="none"/> <!-- Smile -->
+        <circle cx="535" cy="188" r="6" fill="#F56565" opacity="0.4"/> <!-- Blush -->
+        
+        <!-- Hair (Bun Style) -->
+        <g fill="#3C1A0A">
+            <circle cx="555" cy="165" r="26"/>
+            <circle cx="570" cy="185" r="22"/>
+            <circle cx="575" cy="155" r="20"/> <!-- Bun -->
+            <circle cx="540" cy="155" r="16"/>
+        </g>
+
+        <!-- Right Arm (Front) -->
+        <path d="M 555 250 L 520 300 L 480 320" stroke="#F56565" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="480" cy="320" r="8" fill="#D68A59"/>
+
+        <!-- Learning App on Smartphone -->
+        <g transform="rotate(-20 480 320)">
+            <rect x="460" y="295" width="24" height="42" rx="4" fill="#2D3748" filter="url(#soft-shadow)"/>
+            <rect x="462" y="297" width="20" height="38" rx="2" fill="#EBF8FF"/>
+            <!-- Chat Bubbles inside Phone -->
+            <rect x="465" y="302" width="12" height="6" rx="3" fill="#A0AEC0"/>
+            <rect x="469" y="312" width="10" height="6" rx="3" fill="#48BB78"/>
+            <rect x="465" y="322" width="14" height="4" rx="2" fill="#CBD5E0"/>
+        </g>
+    </g>
+
+
+    <!-- ========================================== -->
+    <!-- SPEECH BUBBLES (Language greetings)        -->
+    <!-- ========================================== -->
+    <g id="SpeechBubbles">
+        <!-- Boy's Bubble: ¡Hola! -->
+        <g filter="url(#shadow)">
+            <rect x="150" y="70" width="120" height="50" rx="25" fill="#FFFFFF"/>
+            <path d="M 230 115 L 245 135 L 255 110 Z" fill="#FFFFFF"/>
+            <text x="210" y="103" class="font-main font-bold" font-size="22" fill="#4299E1" text-anchor="middle">¡Hola!</text>
+        </g>
+
+        <!-- Girl's Bubble: Bonjour ! -->
+        <g filter="url(#shadow)">
+            <rect x="520" y="60" width="140" height="50" rx="25" fill="#FFFFFF"/>
+            <path d="M 560 105 L 545 125 L 535 105 Z" fill="#FFFFFF"/>
+            <text x="590" y="93" class="font-main font-bold" font-size="22" fill="#F56565" text-anchor="middle">Bonjour !</text>
+        </g>
+
+        <!-- Floating Center Bubble 1: Hello -->
+        <g filter="url(#shadow)">
+            <rect x="340" y="40" width="100" height="44" rx="22" fill="#FFFFFF"/>
+            <text x="390" y="69" class="font-main font-bold" font-size="20" fill="#48BB78" text-anchor="middle">Hello!</text>
+        </g>
+
+        <!-- Floating Center Bubble 2: Ciao -->
+        <g filter="url(#shadow)">
+            <rect x="360" y="100" width="80" height="36" rx="18" fill="#FFFFFF"/>
+            <text x="400" y="125" class="font-main font-bold" font-size="16" fill="#ED8936" text-anchor="middle">Ciao!</text>
+        </g>
+    </g>
+
+</svg>
