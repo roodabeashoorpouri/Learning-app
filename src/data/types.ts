@@ -87,3 +87,66 @@ export type WorkbookUnit = {
   title: TrilingualText;
   sections: PracticeSection[];
 };
+
+// ─── New Lesson Structure for Student Book ─────────────────────────
+
+export type LessonData = {
+  id: string;
+  title: { hy: string; en: string; fa: string };
+  conversation: {
+    characters: Array<{
+      name: string;
+      role: string;
+      lines: Array<{
+        armenian: string;
+        phonetic: string;
+        translation: string;
+      }>;
+    }>;
+    setting: {
+      description: string;
+      illustration?: string;
+    };
+  };
+  reading: {
+    wideAngleScene: {
+      description: string;
+      illustration?: string;
+    };
+    vocabularyHotspots: Array<{
+      id: string;
+      armenian: string;
+      phonetic: string;
+      translation: string;
+      xPercent: number;
+      yPercent: number;
+    }>;
+    narrativeText?: {
+      armenian: string;
+      phonetic: string;
+      translation: string;
+    };
+  };
+  listening: {
+    exercises: Array<{
+      id: string;
+      armenian: string;
+      phonetic: string;
+      instruction: { en: string; fa: string };
+      feedback?: { en: string; fa: string };
+    }>;
+  };
+  writing: {
+    exercises: Array<{
+      id: string;
+      type: 'alphabet' | 'transcription';
+      letter?: string;
+      word?: {
+        armenian: string;
+        phonetic: string;
+        translation: string;
+      };
+      strokeOrder?: string[];
+    }>;
+  };
+};
