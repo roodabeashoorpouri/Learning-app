@@ -1,48 +1,76 @@
-Ah, this is a brilliant concept. You aren't just making flashcards; you are making a full digital textbook. To make this work in Cursor, we need a **single, powerful Master Prompt** that explains the complex structure of a single lesson.
+# Project Plan: Armenian Language Learning App
 
-We will use your favorite structure: **Context, Instruction, Constraint, Goal.**
-
----
-
-### Master Prompt for the "Student Workbook" (Composer - Cmd + I)
-
-Copy and paste this entire prompt into the Cursor Composer. It is detailed enough to give Cursor everything it needs for the structure.
-
-> **Context:** You are a Mobile UI Architect and a Language Education Content Designer. We are building the **core lesson screen** for "Our Armenian Workbook," which must look exactly like a physical, beautifully illustrated student book from a language class.
-> 
-> **Instruction:** Create a `LessonWorkbookScreen.js` component. This screen will represent **one full lesson**. It must be scrollable, like a long book page.
-> 
-> You need to scaffold **four distinct sections** on this page, strictly in this order:
-> 
-> 1.  **Section 1: The Conversation (Sarah & John)**
->     * Display an illustration of Sarah and John.
->     * Show a dialogue between them about the lesson theme.
->     * This dialogue must be in **Armenian script, English phonetic, English translation**, and **Persian script**.
-> 
-> 2.  **Section 2: The Vocabulary Spotlight (Point & Learn)**
->     * Place a **large, high-resolution main illustration** (e.g., "Sarah and John in a vegetable shop").
->     * Add interactive **tap-targets** (dots/hotspots) on key objects in the picture (e.g., an apple, a carrot).
->     * When a user taps a hotspot, a label appears showing the name of the object in all three languages.
-> 
-> 3.  **Section 3: The Listening Lab**
->     * Add a large 'Play' button. Include the text: "Sarah says: 'Point to the green one.'" (Translate this instruction text into English and Persian).
->     * Add simple placeholder logic for where an audio file will load later.
-> 
-> 4.  **Section 4: The Workbook Activity (Fill the Blanks)**
->     * Create a simple sentence-completion exercise based on the conversation/vocabulary.
->     * Example: "Sarah has a red \_\_\_\_\_\_." (Users must type the Armenian word or choose from a list of options).
-> 
-> **Constraint:**
-> 1.  The overall aesthetic must be "Cream Paper" and "Dark Blue Ink."
-> 2.  **Crucial RTL Handling:** The Persian script must be right-aligned and use a font that looks professional for Arabic/Persian, distinct from the English font.
-> 3.  Do not include the actual pictures yet; use clear **placeholders** (e.g., `<View style={{ backgroundColor: 'lightgray', height: 200 }}><Text>[INSERT SHOP PICTURE]</Text></View>`).
-> 
-> **Goal:** A single, beautifully structured, scrollable screen template that integrates all four classic workbook modalities (Conversation, Vocabulary, Listening, Application), ready to accept content.
+## 1. Project Overview
+This application is a formal, academic-style platform for mastering the Armenian language. Modeled after traditional classroom curricula (**Student Book** and **Workbook**), the app prioritizes a structured, linear learning path over casual gamification, targeting serious learners who want a deep understanding of the language.
 
 ---
 
-### Your Next Step
+## 2. Core User Experience (UX) & Global Mechanics
 
-After Cursor builds this, you will have the complex "shell" of your lesson. Your next job will be to **fill it with data**.
+### A. The "Immersion Engine" (Global Features)
+These mechanics apply to **every** section of the app:
+* **Hidden Translation (Discovery Learning):** To prioritize immersion, the interface displays only Armenian text by default. Users must **tap** words or sentences to toggle the translation.
+* **Integrated Audio:** Every Armenian text element (labels, bubbles, paragraphs) is paired with a **Speaker Icon**. Tapping this plays high-quality native pronunciation.
+* **Visual Continuity:** The app uses a "Zoom-Out" narrative logic to connect Conversation and Reading sections, creating a cohesive sense of place.
 
-**Would you like me to write the JSON data structure for the *first lesson* (like a supermarket) that you can paste into this new screen to test the hotspots and dialogue?**
+### B. Navigation Logic
+* **Horizontal Pagination (Cross-Section):** Users move between the 4 core pillars (Conversation → Reading → Listening → Writing) by **swiping horizontally**, mimicking a physical textbook.
+* **Vertical Scrolling (Intra-Section):** Within the Listening and Writing sections, users scroll vertically to access multiple exercises or long-form content.
+
+---
+
+## 3. Section 1: Conversation (The Speaking Hub)
+**Goal:** Introduce the lesson theme through situational dialogue and social interaction.
+
+* **Visual Focus:** A close-up illustration of the primary characters (**Sarah and John**). The background provides subtle environmental hints (e.g., a bus stop sign or a doctor’s diploma) to set the stage.
+* **UI Mechanics:** * Dialogue is displayed in **Armenian speech clouds**.
+    * Translation is hidden until the user taps the cloud.
+    * An Audio Icon is present for each line of dialogue.
+* **Character Evolution:** While the first lessons feature Sarah and John, the cast will expand as the curriculum progresses to include diverse personalized characters.
+
+---
+
+## 4. Section 2: Reading (Contextual Vocabulary & Narrative)
+**Goal:** Transition from specific dialogue to broader environmental vocabulary and literacy.
+
+* **The "Zoom Out" Visual:** The UI reveals a wide-angle version of the Section 1 scene. 
+    * *Example:* If Section 1 was a close-up of a conversation, Section 2 reveals the entire bus station, the crowd, the street, and the scenery.
+* **Interactive Image Labels:** Key objects within the wide illustration (e.g., "tree," "bench," "bus") are labeled in Armenian. These labels follow the "tap-to-translate" and "tap-to-hear" rules.
+* **Text Evolution:** * **Level 1 (Foundational):** Simple, descriptive sentences beneath the image (e.g., "This is a red bus").
+    * **Level 2 (Advanced/Lesson 20+):** Multi-paragraph narratives or short stories that utilize all vocabulary introduced in the scene.
+
+---
+
+## 5. Section 3: Listening (The Auditory & Speech Lab)
+**Goal:** Develop phonetic accuracy and active recall through a "Listen and Repeat" loop.
+
+* **Layout:** A vertical scroll of card-based exercises.
+* **Mechanics:**
+    1.  **Output (Listening):** User taps the **Speaker Icon** to hear a native word/phrase.
+    2.  **Input (Speaking):** User taps the **Microphone Icon** to record their own pronunciation.
+* **AI Feedback:** An integrated speech-recognition system analyzes the user's audio and provides immediate visual feedback/correction on their pronunciation.
+* **Scaling:** Exercises range from single words in early lessons to full complex sentences in later stages.
+
+---
+
+## 4. Section 4: Writing (The Script & Literacy Lab)
+**Goal:** Master the Armenian alphabet (Ayububen) and orthography (spelling).
+
+* **Alphabet Mastery (Early Lessons):**
+    * **Stroke Order:** An animated guide demonstrates the proper direction and sequence for writing each letter.
+    * **Dual Input:** Users can choose to **Trace/Draw** the character using their finger or **Type** it using an Armenian keyboard layout.
+* **Transcription (Advanced Lessons):**
+    * Users scroll vertically to find writing prompts for full words introduced in the lesson.
+    * This reinforces the connection between individual characters and their role in functional vocabulary.
+
+---
+
+## 7. Navigation & Interaction Summary
+
+| Action | Result |
+| :--- | :--- |
+| **Horizontal Swipe** | Switch Section (e.g., Conversation to Reading) |
+| **Vertical Scroll** | Explore more items within Listening or Writing pages |
+| **Tap Armenian Text** | Toggle hidden translation (English/Target Language) |
+| **Tap Speaker Icon** | Play native Armenian audio playback |
+| **Tap Microphone** | Record user voice for pronunciation check (Section 3) |
