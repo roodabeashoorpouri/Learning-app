@@ -1,7 +1,7 @@
 export type RootStackParamList = {
   Auth: undefined;
   OnboardingStack: undefined;
-  MainTabNavigator: undefined;
+  MainTabNavigator: { resumeLessonId?: string; resumeSectionIndex?: number } | undefined;
   PracticeSession: { sectionId: string };
   PracticeResult: { sectionId: string; correctCount: number; totalCount: number };
 };

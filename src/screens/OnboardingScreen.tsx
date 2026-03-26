@@ -136,6 +136,21 @@ export function OnboardingScreen() {
   const navigation = useNavigation<any>();
   const { nativeLanguage: authNativeLanguage, updateAuth, email: authEmail } = useAuth();
 
+  /** Defensive guard: skip onboarding if already complete */
+  useEffect(() => {
+    async function checkComplete() {
+      if (!authEmail) return;
+      const { getRegisteredUsers } = await import('../storage/registeredUsers');
+      const users = await getRegisteredUsers();
+      const user = users.find((u) => u.email.trim().toLowerCase() === authEmail.trim().toLowerCase());
+      if (user?.onboardingComplete) {
+        navigation.replace('MainTabNavigator');
+      }
+    }
+    void checkComplete();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   /** 0 language, 1 age, 2 purpose, 3 level, 4 gender */
   const stepCount = 5;
   const [stepIndex, setStepIndex] = useState(0);
@@ -205,7 +220,7 @@ export function OnboardingScreen() {
           ...authPatch,
           onboardingComplete: true,
         });
-        navigation.navigate('MainTabNavigator');
+        navigation.replace('MainTabNavigator');
       } finally {
         savingRef.current = false;
       }

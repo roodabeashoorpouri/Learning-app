@@ -15,6 +15,8 @@ export type StoredUser = {
   learningLevel: LearningLevel;
   gender: Gender;
   onboardingComplete: boolean;
+  last_visited_lesson_id?: string;
+  last_visited_section_index?: number;
 };
 
 export function normalizeStoredEmail(email: string): string {
@@ -73,6 +75,13 @@ export async function registerUser(
 ): Promise<void> {
   const users = await getRegisteredUsers();
   const emailNorm = normalizeStoredEmail(partial.email);
+
+  // Guard: never overwrite an existing account
+  const existing = users.find((u) => normalizeStoredEmail(u.email) === emailNorm);
+  if (existing) {
+    throw new Error('EMAIL_ALREADY_REGISTERED');
+  }
+
   const newUser: StoredUser = {
     username: partial.username.trim(),
     email: partial.email.trim(),
@@ -85,9 +94,8 @@ export async function registerUser(
     gender: '',
     onboardingComplete: false,
   };
-  const filtered = users.filter((u) => normalizeStoredEmail(u.email) !== emailNorm);
-  filtered.push(newUser);
-  await setRegisteredUsers(filtered);
+  users.push(newUser);
+  await setRegisteredUsers(users);
 }
 
 export async function updateStoredUser(email: string, updates: Partial<StoredUser>): Promise<void> {
@@ -97,4 +105,47 @@ export async function updateStoredUser(email: string, updates: Partial<StoredUse
   if (idx === -1) return;
   users[idx] = { ...users[idx], ...updates };
   await setRegisteredUsers(users);
+}
+
+export async function saveLessonProgress(
+  email: string,
+  lessonId: string,
+  sectionIndex: number,
+): Promise<void> {
+  await updateStoredUser(email, {
+    last_visited_lesson_id: lessonId,
+    last_visited_section_index: sectionIndex,
+  });
+}
+
+export async function isEmailTaken(email: string): Promise<boolean> {
+  const ne = normalizeStoredEmail(email);
+  if (!ne) return false;
+  const users = await getRegisteredUsers();
+  return users.some((u) => normalizeStoredEmail(u.email) === ne);
+}
+
+/**
+ * Migration: any user who has filled-in profile data but onboardingComplete=false
+ * was corrupted by the old upsert bug. Mark them complete so they skip onboarding.
+ */
+export async function migrateOnboardingFlags(): Promise<void> {
+  const users = await getRegisteredUsers();
+  let changed = false;
+  const fixed = users.map((u) => {
+    if (!u.onboardingComplete && u.ageBracket && u.learningLevel && u.gender && u.purpose) {
+      changed = true;
+      return { ...u, onboardingComplete: true };
+    }
+    return u;
+  });
+  if (changed) {
+    await setRegisteredUsers(fixed);
+  }
+}
+
+/** Dev helper — logs all stored users to console */
+export async function debugDumpUsers(): Promise<void> {
+  const users = await getRegisteredUsers();
+  console.log('[Storage] Registered users:', JSON.stringify(users, null, 2));
 }

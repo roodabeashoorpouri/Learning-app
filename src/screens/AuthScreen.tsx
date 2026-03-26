@@ -12,13 +12,16 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useAuth } from '../context/AuthContext';
 import type { RootStackParamList } from '../components/navigation/types';
 import {
   findUserByEmailOrUsername,
   isUsernameTaken,
+  isEmailTaken,
   registerUser,
+  migrateOnboardingFlags,
   type StoredUser,
 } from '../storage/registeredUsers';
 
@@ -30,6 +33,8 @@ const INK_MUTED = '#2d4a66';
 const ACCENT_LINE = '#1a3d5c';
 
 type EntryMode = 'landing' | 'signup' | 'signin';
+
+const LAST_USER_KEY = '@app/last_logged_in_email';
 
 /** Requires @, domain, and .com TLD (case-insensitive). */
 const EMAIL_COM_REGEX = /^[^\s@]+@[^\s@]+\.com$/i;
@@ -49,6 +54,8 @@ function storedUserToAuthPatch(user: StoredUser) {
     ageBracket: user.ageBracket ?? '',
     learningLevel: user.learningLevel ?? '',
     gender: user.gender,
+    last_visited_lesson_id: user.last_visited_lesson_id ?? '',
+    last_visited_section_index: user.last_visited_section_index ?? 0,
   };
 }
 
@@ -177,13 +184,27 @@ export function AuthScreen() {
                     setErrorMessage('John says: This name is already taken!');
                     return;
                   }
+                  const emailUsed = await isEmailTaken(email);
+                  if (emailUsed) {
+                    setErrorMessage('An account with this email already exists. Try signing in instead.');
+                    return;
+                  }
                   const trimmedUser = username.trim();
                   const trimmedEmail = email.trim();
-                  await registerUser({
-                    username: trimmedUser,
-                    email: trimmedEmail,
-                    nativeLanguage: 'en',
-                  });
+                  try {
+                    await registerUser({
+                      username: trimmedUser,
+                      email: trimmedEmail,
+                      nativeLanguage: 'en',
+                    });
+                  } catch (e: any) {
+                    if (e?.message === 'EMAIL_ALREADY_REGISTERED') {
+                      setErrorMessage('An account with this email already exists. Try signing in instead.');
+                      return;
+                    }
+                    throw e;
+                  }
+                  await AsyncStorage.setItem(LAST_USER_KEY, trimmedEmail.toLowerCase());
                   updateAuth({
                     username: trimmedUser,
                     email: trimmedEmail,
@@ -242,17 +263,22 @@ export function AuthScreen() {
                 resetFormErrors();
                 setBusy(true);
                 try {
+                  await migrateOnboardingFlags();
                   const user = await findUserByEmailOrUsername(signInIdentifier);
                   if (!user) {
                     setErrorMessage('No account matches that email or username on this device.');
                     return;
                   }
                   updateAuth(storedUserToAuthPatch(user));
+                  await AsyncStorage.setItem(LAST_USER_KEY, user.email.trim().toLowerCase());
                   const isRTL = user.nativeLanguage === 'fa';
                   I18nManager.allowRTL(isRTL);
                   I18nManager.forceRTL(isRTL);
                   if (user.onboardingComplete) {
-                    navigation.navigate('MainTabNavigator');
+                    navigation.navigate('MainTabNavigator', {
+                      resumeLessonId: user.last_visited_lesson_id,
+                      resumeSectionIndex: user.last_visited_section_index,
+                    });
                   } else {
                     navigation.navigate('OnboardingStack');
                   }

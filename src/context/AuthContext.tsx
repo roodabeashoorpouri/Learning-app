@@ -15,6 +15,8 @@ export type AuthState = {
   ageBracket: AgeBracket;
   learningLevel: LearningLevel;
   gender: Gender;
+  last_visited_lesson_id: string;
+  last_visited_section_index: number;
 };
 
 export type AuthContextValue = AuthState & {
@@ -32,6 +34,8 @@ const initialAuthState: AuthState = {
   ageBracket: '',
   learningLevel: '',
   gender: '',
+  last_visited_lesson_id: '',
+  last_visited_section_index: 0,
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);

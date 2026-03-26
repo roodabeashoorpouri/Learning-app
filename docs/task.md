@@ -1,5 +1,12 @@
 🚀 Project Roadmap & Task Prioritization
 
+🔴 Task: Smart Resume & Session Persistence
+* **Objective:** Implement a "Bookmark" system to ensure returning users resume exactly where they left off.
+* **Logic Flow:**
+    * **User Identification:** Distinguish between "New Sign-up" and "Returning Login" during the authentication flow.
+    * **Onboarding Bypass:** If the user is returning, programmatically skip the onboarding/intro sequence.
+    * **State Recovery:** Retrieve the `last_visited_lesson_id` and the specific `last_visited_section_index` (1 through 4) from the database or local storage.
+    * **Deep Linking:** Automatically redirect the user to the specific page (Conversation, Reading, Listening, or Writing) of the lesson they were last studying.
 
 🔴 CRITICAL: System Stability & Authentication
 Fix Workbook Redirect Bug

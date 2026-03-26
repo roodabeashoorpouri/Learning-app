@@ -1,13 +1,26 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useAuth } from '../context/AuthContext';
+import type { RootStackParamList } from '../components/navigation/types';
 
 export function StudentBookScreen() {
   const insets = useSafeAreaInsets();
-  const { nativeLanguage } = useAuth();
+  const { nativeLanguage, last_visited_lesson_id, last_visited_section_index } = useAuth();
   const isPersian = nativeLanguage === 'fa';
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const hasResumed = useRef(false);
+
+  useEffect(() => {
+    if (hasResumed.current) return;
+    if (last_visited_lesson_id) {
+      hasResumed.current = true;
+      navigation.navigate('PracticeSession', { sectionId: last_visited_lesson_id });
+    }
+  }, [last_visited_lesson_id, navigation]);
   
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>

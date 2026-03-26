@@ -18,6 +18,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { workbookUnits } from '../data/workbookContent';
 import { t } from '../utils/textHelpers';
+import { saveLessonProgress } from '../storage/registeredUsers';
 import type { RootStackParamList } from '../components/navigation/types';
 import type { PracticeSection, WorkbookUnit } from '../data/types';
 
@@ -134,13 +135,17 @@ function UnitBlock({
 
 export function WorkbookScreen() {
   const insets = useSafeAreaInsets();
-  const { nativeLanguage } = useAuth();
+  const { nativeLanguage, email, updateAuth } = useAuth();
   const navigation = useNavigation<Nav>();
   const isPersian = nativeLanguage === 'fa';
   const [fontsLoaded] = useFonts({ Vazirmatn_400Regular, Vazirmatn_700Bold });
   const persianFont = fontsLoaded ? 'Vazirmatn_700Bold' : undefined;
 
-  const handleSectionPress = (sectionId: string) => {
+  const handleSectionPress = async (sectionId: string) => {
+    if (email) {
+      await saveLessonProgress(email, sectionId, 0);
+      updateAuth({ last_visited_lesson_id: sectionId, last_visited_section_index: 0 });
+    }
     navigation.navigate('PracticeSession', { sectionId });
   };
 
