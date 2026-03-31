@@ -6,6 +6,8 @@ export type AgeBracket = '' | '3-12' | '12-25' | '25-45' | '45+';
 export type LearningLevel = '' | 'beginner' | 'intermediate' | 'advanced';
 
 export type AuthState = {
+  /** SQLite user id — 0 means not logged in */
+  userId: number;
   username: string;
   email: string;
   nativeLanguage: NativeLanguage;
@@ -22,9 +24,11 @@ export type AuthState = {
 export type AuthContextValue = AuthState & {
   updateAuth: (updates: Partial<AuthState>) => void;
   resetAuth: () => void;
+  isLoggedIn: boolean;
 };
 
 const initialAuthState: AuthState = {
+  userId: 0,
   username: '',
   email: '',
   nativeLanguage: 'en',
@@ -54,6 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       ...auth,
       updateAuth,
       resetAuth,
+      isLoggedIn: auth.userId > 0,
     }),
     [auth, updateAuth, resetAuth],
   );
@@ -68,4 +73,3 @@ export function useAuth() {
   }
   return ctx;
 }
-

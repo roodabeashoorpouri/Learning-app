@@ -1,18 +1,20 @@
 {
   "expo": {
-    "name": "app",
-    "slug": "app",
+    "name": "Armenian Learning",
+    "slug": "armenian-learning",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "description": "Learn Armenian with interactive lessons and exercises. Supports English and Persian speakers.",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#f7f4ec"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.armenianlearning.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,6 +23,7 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
+      "package": "com.armenianlearning.app",
       "predictiveBackGestureEnabled": false
     },
     "web": {
@@ -28,7 +31,8 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      "expo-sqlite"
     ]
   }
 }

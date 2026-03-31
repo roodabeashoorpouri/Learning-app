@@ -5,11 +5,22 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useAuth } from '../context/AuthContext';
+import { lessons } from '../data/lessonContent';
 import type { RootStackParamList } from '../components/navigation/types';
+
+const PAPER = '#f7f4ec';
+const INK = '#0f2744';
+const INK_MUTED = '#2d4a66';
+const ACCENT_LINE = '#1a3d5c';
+
+const sectionLabels = {
+  en: ['Conversation', 'Reading', 'Listening', 'Writing'],
+  fa: ['\u0645\u06A9\u0627\u0644\u0645\u0647', '\u062E\u0648\u0627\u0646\u062F\u0646', '\u0634\u0646\u06CC\u062F\u0646', '\u0646\u0648\u0634\u062A\u0646'],
+};
 
 export function StudentBookScreen() {
   const insets = useSafeAreaInsets();
-  const { nativeLanguage, last_visited_lesson_id, last_visited_section_index } = useAuth();
+  const { nativeLanguage, last_visited_lesson_id } = useAuth();
   const isPersian = nativeLanguage === 'fa';
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const hasResumed = useRef(false);
@@ -21,87 +32,53 @@ export function StudentBookScreen() {
       navigation.navigate('PracticeSession', { sectionId: last_visited_lesson_id });
     }
   }, [last_visited_lesson_id, navigation]);
-  
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         <Text style={[styles.title, isPersian && styles.rtlText]}>
-          {isPersian ? 'کتاب دانش‌آموز ارمنی' : 'Armenian Student Book'}
-        </Text>
-        
-        <Text style={[styles.subtitle, isPersian && styles.rtlText]}>
-          {isPersian ? 'درس ۱ - ملاقات در بازار' : 'Lesson 1 - Meeting at the Market'}
+          {isPersian ? '\u06A9\u062A\u0627\u0628 \u062F\u0627\u0646\u0634\u200C\u0622\u0645\u0648\u0632 \u0627\u0631\u0645\u0646\u06CC' : 'Armenian Student Book'}
         </Text>
 
-        <View style={styles.sectionCard}>
-          <Text style={styles.sectionNumber}>1</Text>
-          <Text style={[styles.sectionTitle, isPersian && styles.rtlText]}>
-            {isPersian ? 'مکالمه' : 'Conversation'}
-          </Text>
-          <Text style={[styles.sampleText, isPersian && styles.rtlText]}>
-            {isPersian 
-              ? 'سارا و جان در بازار سبزیجات ملاقات می‌کنند'
-              : 'Sarah and John meet at the vegetable market'
-            }
-          </Text>
-        </View>
+        {lessons.map((lesson, lessonIndex) => {
+          const lessonTitle = isPersian ? lesson.title.fa : lesson.title.en;
+          const labels = isPersian ? sectionLabels.fa : sectionLabels.en;
 
-        <View style={styles.sectionCard}>
-          <Text style={styles.sectionNumber}>2</Text>
-          <Text style={[styles.sectionTitle, isPersian && styles.rtlText]}>
-            {isPersian ? 'خواندن' : 'Reading'}
-          </Text>
-          <Text style={[styles.sampleText, isPersian && styles.rtlText]}>
-            {isPersian 
-              ? 'نمای کامل بازار با واژگان تعاملی'
-              : 'Wide view of the market with interactive vocabulary'
-            }
-          </Text>
-        </View>
+          return (
+            <View key={lesson.id} style={styles.lessonBlock}>
+              <Text style={[styles.subtitle, isPersian && styles.rtlText]}>
+                {lessonTitle}
+              </Text>
+              {lesson.title.hy ? (
+                <Text style={styles.armenianTitle}>{lesson.title.hy}</Text>
+              ) : null}
 
-        <View style={styles.sectionCard}>
-          <Text style={styles.sectionNumber}>3</Text>
-          <Text style={[styles.sectionTitle, isPersian && styles.rtlText]}>
-            {isPersian ? 'شنیدن' : 'Listening'}
-          </Text>
-          <Text style={[styles.sampleText, isPersian && styles.rtlText]}>
-            {isPersian 
-              ? 'تمرین‌های گوش دادن و تکرار'
-              : 'Listen and repeat exercises'
-            }
-          </Text>
-        </View>
+              {labels.map((label, i) => (
+                <View key={i} style={styles.sectionCard}>
+                  <View style={styles.sectionNumberWrap}>
+                    <Text style={styles.sectionNumber}>{i + 1}</Text>
+                  </View>
+                  <View style={styles.sectionInfo}>
+                    <Text style={[styles.sectionTitle, isPersian && styles.rtlText]}>
+                      {label}
+                    </Text>
+                  </View>
+                </View>
+              ))}
 
-        <View style={styles.sectionCard}>
-          <Text style={styles.sectionNumber}>4</Text>
-          <Text style={[styles.sectionTitle, isPersian && styles.rtlText]}>
-            {isPersian ? 'نوشتن' : 'Writing'}
-          </Text>
-          <Text style={[styles.sampleText, isPersian && styles.rtlText]}>
-            {isPersian 
-              ? 'یادگیری الفبای ارمنی'
-              : 'Learn the Armenian alphabet'
-            }
-          </Text>
-        </View>
-
-        <View style={styles.comingSoon}>
-          <Text style={[styles.comingSoonText, isPersian && styles.rtlText]}>
-            {isPersian 
-              ? 'قابلیت کامل تعاملی به زودی اضافه می‌شود'
-              : 'Full interactive functionality coming soon'
-            }
-          </Text>
-        </View>
+              {lessonIndex < lessons.length - 1 && <View style={styles.divider} />}
+            </View>
+          );
+        })}
       </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { 
+  container: {
     flex: 1,
-    backgroundColor: '#f7f4ec',
+    backgroundColor: PAPER,
   },
   scroll: {
     flex: 1,
@@ -109,73 +86,67 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 20,
     paddingVertical: 20,
+    paddingBottom: 40,
   },
   title: {
     fontSize: 28,
     fontWeight: '800',
-    color: '#0f2744',
+    color: INK,
     textAlign: 'center',
+    marginBottom: 24,
+  },
+  lessonBlock: {
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#2d4a66',
-    textAlign: 'center',
-    marginBottom: 32,
+    color: INK_MUTED,
+    marginBottom: 4,
+  },
+  armenianTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: INK_MUTED,
+    marginBottom: 12,
+    opacity: 0.7,
   },
   sectionCard: {
     backgroundColor: '#fffefb',
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#1a3d5c',
-    padding: 20,
-    marginBottom: 16,
+    borderColor: ACCENT_LINE,
+    padding: 14,
+    marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
   },
-  sectionNumber: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#0f2744',
-    color: '#f7f4ec',
-    fontSize: 18,
-    fontWeight: '800',
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    marginRight: 16,
+  sectionNumberWrap: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: INK,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 14,
   },
-  sectionTitle: {
-    fontSize: 20,
+  sectionNumber: {
+    color: PAPER,
+    fontSize: 16,
     fontWeight: '800',
-    color: '#0f2744',
-    marginBottom: 4,
+  },
+  sectionInfo: {
     flex: 1,
   },
-  sampleText: {
-    fontSize: 14,
-    color: '#2d4a66',
-    lineHeight: 20,
-    position: 'absolute',
-    left: 76,
-    right: 20,
-    bottom: 20,
+  sectionTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: INK,
   },
-  comingSoon: {
-    marginTop: 32,
-    padding: 20,
-    backgroundColor: 'rgba(26,61,92,0.1)',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(26,61,92,0.2)',
-  },
-  comingSoonText: {
-    fontSize: 16,
-    color: '#1a3d5c',
-    textAlign: 'center',
-    fontStyle: 'italic',
-    lineHeight: 24,
+  divider: {
+    height: 1,
+    backgroundColor: 'rgba(15,39,68,0.15)',
+    marginVertical: 20,
   },
   rtlText: {
     textAlign: 'right',

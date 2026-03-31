@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeOut } from 'react-native-reanimated';
 
@@ -24,57 +24,71 @@ export function MatchPairsExerciseView({
   nativeLanguage,
   onAnswer,
 }: Props) {
-  // Shuffle right-side options
-  const shuffledRightIndices = useMemo(() => {
+  // Shuffle right-side options (one-time init per exercise via lazy state)
+  const [shuffledRightIndices] = useState(() => {
     const indices = exercise.pairs.map((_, i) => i);
     for (let i = indices.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [indices[i], indices[j]] = [indices[j], indices[i]];
     }
     return indices;
-  }, [exercise.pairs]);
+  });
 
   const [matchedIndices, setMatchedIndices] = useState<Set<number>>(new Set());
   const [selectedLeft, setSelectedLeft] = useState<number | null>(null);
   const [selectedRight, setSelectedRight] = useState<number | null>(null);
   const [flashWrong, setFlashWrong] = useState<{ left: number; right: number } | null>(null);
 
-  const handleLeftPress = useCallback((idx: number) => {
-    if (matchedIndices.has(idx)) return;
-    setSelectedLeft((prev) => (prev === idx ? null : idx));
-  }, [matchedIndices]);
-
-  const handleRightPress = useCallback((shuffledIdx: number) => {
-    const realIdx = shuffledRightIndices[shuffledIdx];
-    if (matchedIndices.has(realIdx)) return;
-    setSelectedRight((prev) => (prev === shuffledIdx ? null : shuffledIdx));
-  }, [matchedIndices, shuffledRightIndices]);
-
-  // Check for a match when both sides are selected
-  useEffect(() => {
-    if (selectedLeft === null || selectedRight === null) return;
-
-    const realRight = shuffledRightIndices[selectedRight];
-
-    if (selectedLeft === realRight) {
-      // Correct match
+  const checkMatch = useCallback((left: number, rightShuffled: number) => {
+    const realRight = shuffledRightIndices[rightShuffled];
+    if (left === realRight) {
       setMatchedIndices((prev) => {
         const next = new Set(prev);
-        next.add(selectedLeft);
+        next.add(left);
         return next;
       });
       setSelectedLeft(null);
       setSelectedRight(null);
     } else {
-      // Wrong match
-      setFlashWrong({ left: selectedLeft, right: selectedRight });
+      setFlashWrong({ left, right: rightShuffled });
       setTimeout(() => {
         setFlashWrong(null);
         setSelectedLeft(null);
         setSelectedRight(null);
       }, 600);
     }
-  }, [selectedLeft, selectedRight, shuffledRightIndices]);
+  }, [shuffledRightIndices]);
+
+  const handleLeftPress = useCallback((idx: number) => {
+    if (matchedIndices.has(idx)) return;
+    setSelectedLeft((prev) => {
+      const newLeft = prev === idx ? null : idx;
+      // If right is already selected, check match immediately
+      setSelectedRight((currentRight) => {
+        if (newLeft !== null && currentRight !== null) {
+          setTimeout(() => checkMatch(newLeft, currentRight), 0);
+        }
+        return currentRight;
+      });
+      return newLeft;
+    });
+  }, [matchedIndices, checkMatch]);
+
+  const handleRightPress = useCallback((shuffledIdx: number) => {
+    const realIdx = shuffledRightIndices[shuffledIdx];
+    if (matchedIndices.has(realIdx)) return;
+    setSelectedRight((prev) => {
+      const newRight = prev === shuffledIdx ? null : shuffledIdx;
+      // If left is already selected, check match immediately
+      setSelectedLeft((currentLeft) => {
+        if (currentLeft !== null && newRight !== null) {
+          setTimeout(() => checkMatch(currentLeft, newRight), 0);
+        }
+        return currentLeft;
+      });
+      return newRight;
+    });
+  }, [matchedIndices, shuffledRightIndices, checkMatch]);
 
   // Signal completion when all pairs matched
   useEffect(() => {
