@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
 export type NativeLanguage = 'en' | 'fa';
 export type Gender = 'male' | 'female' | 'other' | '';
@@ -43,13 +43,19 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [auth, setAuth] = useState<AuthState>(initialAuthState);
 
+  const updateAuth = useCallback(
+    (updates: Partial<AuthState>) => setAuth((prev) => ({ ...prev, ...updates })),
+    [],
+  );
+  const resetAuth = useCallback(() => setAuth(initialAuthState), []);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       ...auth,
-      updateAuth: (updates) => setAuth((prev) => ({ ...prev, ...updates })),
-      resetAuth: () => setAuth(initialAuthState),
+      updateAuth,
+      resetAuth,
     }),
-    [auth],
+    [auth, updateAuth, resetAuth],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
