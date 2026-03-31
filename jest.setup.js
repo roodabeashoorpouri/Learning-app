@@ -1,3 +1,11 @@
+// Provide the Expo import meta registry global that jest-expo expects
+if (typeof globalThis.__ExpoImportMetaRegistry === 'undefined') {
+  globalThis.__ExpoImportMetaRegistry = {
+    register(id, metaObj) {},
+    get(id) { return {}; },
+  };
+}
+
 // Mock expo-speech
 jest.mock('expo-speech', () => ({
   speak: jest.fn(),
@@ -7,7 +15,7 @@ jest.mock('expo-speech', () => ({
 
 // Mock AsyncStorage
 jest.mock('@react-native-async-storage/async-storage', () => {
-  const store = {};
+  let store = {};
   return {
     __esModule: true,
     default: {
@@ -21,11 +29,12 @@ jest.mock('@react-native-async-storage/async-storage', () => {
         return Promise.resolve();
       }),
       clear: jest.fn(() => {
-        Object.keys(store).forEach((key) => delete store[key]);
+        store = {};
         return Promise.resolve();
       }),
       getAllKeys: jest.fn(() => Promise.resolve(Object.keys(store))),
-      _store: store,
+      _getStore: () => store,
+      _resetStore: () => { store = {}; },
     },
   };
 });
