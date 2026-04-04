@@ -9,6 +9,7 @@
  * }>}
  */
 export const vocabulary = [
+
   {
     Armenian_Script: 'Բարև',
     Armenian_Phonetic: 'bah-rev',
@@ -148,5 +149,283 @@ export const vocabulary = [
     English_Mean: 'Wait (you)',
     Persian_Mean: 'صبر کن',
     Persian_Phonetic: 'sabr kon',
+  },
+
+  // ── Numbers (20–29) ──────────────────────────────────
+  {
+    Armenian_Script: 'Մեկ',
+    Armenian_Phonetic: 'mek',
+    English_Mean: 'One',
+    Persian_Mean: 'یک',
+    Persian_Phonetic: 'yek',
+  },
+  {
+    Armenian_Script: 'Երկու',
+    Armenian_Phonetic: 'yer-ku',
+    English_Mean: 'Two',
+    Persian_Mean: 'دو',
+    Persian_Phonetic: 'do',
+  },
+  {
+    Armenian_Script: 'Երեք',
+    Armenian_Phonetic: 'ye-rek',
+    English_Mean: 'Three',
+    Persian_Mean: 'سه',
+    Persian_Phonetic: 'se',
+  },
+  {
+    Armenian_Script: 'Չորս',
+    Armenian_Phonetic: 'chors',
+    English_Mean: 'Four',
+    Persian_Mean: 'چهار',
+    Persian_Phonetic: 'cha-hār',
+  },
+  {
+    Armenian_Script: 'Հինգ',
+    Armenian_Phonetic: 'hing',
+    English_Mean: 'Five',
+    Persian_Mean: 'پنج',
+    Persian_Phonetic: 'panj',
+  },
+  {
+    Armenian_Script: 'Վեց',
+    Armenian_Phonetic: 'vets',
+    English_Mean: 'Six',
+    Persian_Mean: 'شش',
+    Persian_Phonetic: 'shesh',
+  },
+  {
+    Armenian_Script: 'Յոթ',
+    Armenian_Phonetic: 'yot',
+    English_Mean: 'Seven',
+    Persian_Mean: 'هفت',
+    Persian_Phonetic: 'haft',
+  },
+  {
+    Armenian_Script: 'Ութ',
+    Armenian_Phonetic: 'ut',
+    English_Mean: 'Eight',
+    Persian_Mean: 'هشت',
+    Persian_Phonetic: 'hasht',
+  },
+  {
+    Armenian_Script: 'Ինը',
+    Armenian_Phonetic: 'i-nuh',
+    English_Mean: 'Nine',
+    Persian_Mean: 'نُه',
+    Persian_Phonetic: 'noh',
+  },
+  {
+    Armenian_Script: 'Տասն',
+    Armenian_Phonetic: 'tasn',
+    English_Mean: 'Ten',
+    Persian_Mean: 'ده',
+    Persian_Phonetic: 'dah',
+  },
+
+  // ── Family (30–35) ───────────────────────────────────
+  {
+    Armenian_Script: 'Մայրիկ',
+    Armenian_Phonetic: 'may-rik',
+    English_Mean: 'Mother',
+    Persian_Mean: 'مادر',
+    Persian_Phonetic: 'mā-dar',
+  },
+  {
+    Armenian_Script: 'Հայրիկ',
+    Armenian_Phonetic: 'hay-rik',
+    English_Mean: 'Father',
+    Persian_Mean: 'پدر',
+    Persian_Phonetic: 'pe-dar',
+  },
+  {
+    Armenian_Script: 'Քույր',
+    Armenian_Phonetic: 'kuyr',
+    English_Mean: 'Sister',
+    Persian_Mean: 'خواهر',
+    Persian_Phonetic: 'khā-har',
+  },
+  {
+    Armenian_Script: 'Եղբայր',
+    Armenian_Phonetic: 'yegh-bayr',
+    English_Mean: 'Brother',
+    Persian_Mean: 'برادر',
+    Persian_Phonetic: 'ba-rā-dar',
+  },
+  {
+    Armenian_Script: 'Երեխա',
+    Armenian_Phonetic: 'ye-re-kha',
+    English_Mean: 'Child',
+    Persian_Mean: 'بچه',
+    Persian_Phonetic: 'bach-che',
+  },
+  {
+    Armenian_Script: 'Ընտանիք',
+    Armenian_Phonetic: 'en-ta-nik',
+    English_Mean: 'Family',
+    Persian_Mean: 'خانواده',
+    Persian_Phonetic: 'khā-ne-vā-de',
+  },
+
+  // ── Food & Drink (36–41) ─────────────────────────────
+  {
+    Armenian_Script: 'Կաթ',
+    Armenian_Phonetic: 'kat',
+    English_Mean: 'Milk',
+    Persian_Mean: 'شیر',
+    Persian_Phonetic: 'shir',
+  },
+  {
+    Armenian_Script: 'Միս',
+    Armenian_Phonetic: 'mis',
+    English_Mean: 'Meat',
+    Persian_Mean: 'گوشت',
+    Persian_Phonetic: 'gusht',
+  },
+  {
+    Armenian_Script: 'Թեյ',
+    Armenian_Phonetic: 'tey',
+    English_Mean: 'Tea',
+    Persian_Mean: 'چای',
+    Persian_Phonetic: 'chāy',
+  },
+  {
+    Armenian_Script: 'Սուրջ',
+    Armenian_Phonetic: 'surj',
+    English_Mean: 'Coffee',
+    Persian_Mean: 'قهوه',
+    Persian_Phonetic: 'ghah-ve',
+  },
+  {
+    Armenian_Script: 'Պանիր',
+    Armenian_Phonetic: 'pa-nir',
+    English_Mean: 'Cheese',
+    Persian_Mean: 'پنیر',
+    Persian_Phonetic: 'pa-nir',
+  },
+  {
+    Armenian_Script: 'Միրգ',
+    Armenian_Phonetic: 'meeghrk',
+    English_Mean: 'Fruit',
+    Persian_Mean: 'میوه',
+    Persian_Phonetic: 'mi-ve',
+  },
+
+  // ── Common Verbs (42–47) ─────────────────────────────
+  {
+    Armenian_Script: 'Գնալ',
+    Armenian_Phonetic: 'gnal',
+    English_Mean: 'To go',
+    Persian_Mean: 'رفتن',
+    Persian_Phonetic: 'raf-tan',
+  },
+  {
+    Armenian_Script: 'Գալ',
+    Armenian_Phonetic: 'gal',
+    English_Mean: 'To come',
+    Persian_Mean: 'آمدن',
+    Persian_Phonetic: 'ā-ma-dan',
+  },
+  {
+    Armenian_Script: 'Ուտել',
+    Armenian_Phonetic: 'u-tel',
+    English_Mean: 'To eat',
+    Persian_Mean: 'خوردن',
+    Persian_Phonetic: 'khor-dan',
+  },
+  {
+    Armenian_Script: 'Խմել',
+    Armenian_Phonetic: 'khmel',
+    English_Mean: 'To drink',
+    Persian_Mean: 'نوشیدن',
+    Persian_Phonetic: 'nu-shi-dan',
+  },
+  {
+    Armenian_Script: 'Տեսնել',
+    Armenian_Phonetic: 'tes-nel',
+    English_Mean: 'To see',
+    Persian_Mean: 'دیدن',
+    Persian_Phonetic: 'di-dan',
+  },
+  {
+    Armenian_Script: 'Ուզել',
+    Armenian_Phonetic: 'u-ze-nal',
+    English_Mean: 'To want',
+    Persian_Mean: 'خواستن',
+    Persian_Phonetic: 'khās-tan',
+  },
+
+  // ── Question Words (48–52) ───────────────────────────
+  {
+    Armenian_Script: 'Ինչ',
+    Armenian_Phonetic: 'inch',
+    English_Mean: 'What',
+    Persian_Mean: 'چه',
+    Persian_Phonetic: 'che',
+  },
+  {
+    Armenian_Script: 'Որտեղ',
+    Armenian_Phonetic: 'vor-tegh',
+    English_Mean: 'Where',
+    Persian_Mean: 'کجا',
+    Persian_Phonetic: 'ko-jā',
+  },
+  {
+    Armenian_Script: 'Երբ',
+    Armenian_Phonetic: 'yerp',
+    English_Mean: 'When',
+    Persian_Mean: 'کِی',
+    Persian_Phonetic: 'key',
+  },
+  {
+    Armenian_Script: 'Ով',
+    Armenian_Phonetic: 'ov',
+    English_Mean: 'Who',
+    Persian_Mean: 'چه کسی',
+    Persian_Phonetic: 'che ka-si',
+  },
+  {
+    Armenian_Script: 'Ինչու',
+    Armenian_Phonetic: 'in-chu',
+    English_Mean: 'Why',
+    Persian_Mean: 'چرا',
+    Persian_Phonetic: 'che-rā',
+  },
+
+  // ── Adjectives (53–57) ───────────────────────────────
+  {
+    Armenian_Script: 'Մեծ',
+    Armenian_Phonetic: 'mets',
+    English_Mean: 'Big',
+    Persian_Mean: 'بزرگ',
+    Persian_Phonetic: 'bo-zorg',
+  },
+  {
+    Armenian_Script: 'Փոքր',
+    Armenian_Phonetic: 'pokr',
+    English_Mean: 'Small',
+    Persian_Mean: 'کوچک',
+    Persian_Phonetic: 'ku-chak',
+  },
+  {
+    Armenian_Script: 'Գեղեցիկ',
+    Armenian_Phonetic: 'ge-ghe-tsik',
+    English_Mean: 'Beautiful',
+    Persian_Mean: 'زیبا',
+    Persian_Phonetic: 'zi-bā',
+  },
+  {
+    Armenian_Script: 'Նոր',
+    Armenian_Phonetic: 'nor',
+    English_Mean: 'New',
+    Persian_Mean: 'جدید',
+    Persian_Phonetic: 'ja-did',
+  },
+  {
+    Armenian_Script: 'Հին',
+    Armenian_Phonetic: 'hin',
+    English_Mean: 'Old',
+    Persian_Mean: 'قدیمی',
+    Persian_Phonetic: 'gha-di-mi',
   },
 ];

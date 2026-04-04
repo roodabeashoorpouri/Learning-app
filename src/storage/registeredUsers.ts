@@ -147,5 +147,8 @@ export async function migrateOnboardingFlags(): Promise<void> {
 /** Dev helper — logs all stored users to console */
 export async function debugDumpUsers(): Promise<void> {
   const users = await getRegisteredUsers();
-  console.log('[Storage] Registered users:', JSON.stringify(users, null, 2));
+  if (__DEV__) {
+    // eslint-disable-next-line no-console
+    console.log('[Storage] Registered users:', JSON.stringify(users, null, 2));
+  }
 }

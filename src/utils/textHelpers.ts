@@ -1,8 +1,10 @@
 import type { NativeLanguage } from '../context/AuthContext';
 import type { TrilingualText } from '../data/types';
 
+type Translatable = TrilingualText | { en: string; fa: string; hy?: string };
+
 /** Return the English or Persian string based on the user's native language. */
-export function t(text: TrilingualText, lang: NativeLanguage): string {
+export function t(text: Translatable, lang: NativeLanguage): string {
   return lang === 'fa' ? text.fa : text.en;
 }
 

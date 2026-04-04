@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Dimensions, StyleSheet, View, Platform, ScrollView } from 'react-native';
+import { Dimensions, StyleSheet, View, ScrollView } from 'react-native';
 
 import { ConversationSection } from './sections/ConversationSection';
 import { ReadingSection } from './sections/ReadingSection';

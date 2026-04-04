@@ -12,20 +12,20 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useAuth } from '../context/AuthContext';
 import type { RootStackParamList } from '../components/navigation/types';
 import {
+  createUser,
   findUserByEmailOrUsername,
   isUsernameTaken,
   isEmailTaken,
-  registerUser,
-  migrateOnboardingFlags,
-  type StoredUser,
-} from '../storage/registeredUsers';
+  verifyPassword,
+  getBookmark,
+  setAppState,
+} from '../lib/api';
+import { userRowToAuth } from '../lib/authHelpers';
 
-/** Workbook palette — match LessonWorkbookScreen */
 const PAPER = '#f7f4ec';
 const PAPER_DEEP = '#efe8dc';
 const INK = '#0f2744';
@@ -34,29 +34,25 @@ const ACCENT_LINE = '#1a3d5c';
 
 type EntryMode = 'landing' | 'signup' | 'signin';
 
-const LAST_USER_KEY = '@app/last_logged_in_email';
-
 /** Requires @, domain, and .com TLD (case-insensitive). */
 const EMAIL_COM_REGEX = /^[^\s@]+@[^\s@]+\.com$/i;
+
+/** Username: alphanumeric + underscore, 3-20 chars. */
+const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,20}$/;
+
+/** Password: at least 8 chars, at least one letter and one number. */
+const PASSWORD_REGEX = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
 
 function isValidSignupEmail(email: string): boolean {
   return EMAIL_COM_REGEX.test(email.trim());
 }
 
-function storedUserToAuthPatch(user: StoredUser) {
-  return {
-    username: user.username,
-    email: user.email,
-    nativeLanguage: user.nativeLanguage,
-    purpose: user.purpose,
-    dailyGoal: user.dailyGoal,
-    age: user.age,
-    ageBracket: user.ageBracket ?? '',
-    learningLevel: user.learningLevel ?? '',
-    gender: user.gender,
-    last_visited_lesson_id: user.last_visited_lesson_id ?? '',
-    last_visited_section_index: user.last_visited_section_index ?? 0,
-  };
+function isValidUsername(username: string): boolean {
+  return USERNAME_REGEX.test(username.trim());
+}
+
+function isStrongPassword(password: string): boolean {
+  return PASSWORD_REGEX.test(password);
 }
 
 export function AuthScreen() {
@@ -66,16 +62,25 @@ export function AuthScreen() {
   const [mode, setMode] = useState<EntryMode>('landing');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [signInIdentifier, setSignInIdentifier] = useState('');
+  const [signInPassword, setSignInPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const canSignUp = useMemo(
-    () => username.trim().length > 0 && email.trim().length > 0 && !busy,
-    [busy, email, username],
+    () =>
+      username.trim().length > 0 &&
+      email.trim().length > 0 &&
+      password.length >= 8 &&
+      !busy,
+    [busy, email, username, password],
   );
 
-  const canSignIn = useMemo(() => signInIdentifier.trim().length > 0 && !busy, [busy, signInIdentifier]);
+  const canSignIn = useMemo(
+    () => signInIdentifier.trim().length > 0 && signInPassword.length > 0 && !busy,
+    [busy, signInIdentifier, signInPassword],
+  );
 
   const resetFormErrors = () => setErrorMessage(null);
 
@@ -97,7 +102,7 @@ export function AuthScreen() {
         {mode === 'landing' && (
           <>
             <Text style={styles.title}>Welcome</Text>
-            <Text style={styles.subtitle}>Choose how you’d like to enter class.</Text>
+            <Text style={styles.subtitle}>Choose how you'd like to enter class.</Text>
 
             <Pressable
               style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}
@@ -129,7 +134,7 @@ export function AuthScreen() {
               <Text style={styles.backLinkText}>← Back</Text>
             </Pressable>
             <Text style={styles.title}>Join the Class</Text>
-            <Text style={styles.subtitle}>Tell us who you are. We’ll save this on your device.</Text>
+            <Text style={styles.subtitle}>Create your account to start learning.</Text>
 
             {errorMessage ? (
               <View style={styles.errorBox}>
@@ -160,8 +165,23 @@ export function AuthScreen() {
                 resetFormErrors();
                 setUsername(t);
               }}
-              placeholder="Pick a unique name"
+              placeholder="3-20 chars, letters/numbers/underscore"
               autoCapitalize="none"
+              style={styles.input}
+              placeholderTextColor={INK_MUTED}
+              editable={!busy}
+              maxLength={20}
+            />
+
+            <Text style={styles.fieldLabel}>Password</Text>
+            <TextInput
+              value={password}
+              onChangeText={(t) => {
+                resetFormErrors();
+                setPassword(t);
+              }}
+              placeholder="At least 8 characters"
+              secureTextEntry
               style={styles.input}
               placeholderTextColor={INK_MUTED}
               editable={!busy}
@@ -177,11 +197,19 @@ export function AuthScreen() {
                   setErrorMessage('Enter a valid email (needs @ and a .com address).');
                   return;
                 }
+                if (!isValidUsername(username)) {
+                  setErrorMessage('Username must be 3-20 characters: letters, numbers, or underscore.');
+                  return;
+                }
+                if (!isStrongPassword(password)) {
+                  setErrorMessage('Password must be at least 8 characters with at least one letter and one number.');
+                  return;
+                }
                 setBusy(true);
                 try {
                   const taken = await isUsernameTaken(username);
                   if (taken) {
-                    setErrorMessage('John says: This name is already taken!');
+                    setErrorMessage('This username is already taken.');
                     return;
                   }
                   const emailUsed = await isEmailTaken(email);
@@ -189,33 +217,10 @@ export function AuthScreen() {
                     setErrorMessage('An account with this email already exists. Try signing in instead.');
                     return;
                   }
-                  const trimmedUser = username.trim();
-                  const trimmedEmail = email.trim();
-                  try {
-                    await registerUser({
-                      username: trimmedUser,
-                      email: trimmedEmail,
-                      nativeLanguage: 'en',
-                    });
-                  } catch (e: any) {
-                    if (e?.message === 'EMAIL_ALREADY_REGISTERED') {
-                      setErrorMessage('An account with this email already exists. Try signing in instead.');
-                      return;
-                    }
-                    throw e;
-                  }
-                  await AsyncStorage.setItem(LAST_USER_KEY, trimmedEmail.toLowerCase());
-                  updateAuth({
-                    username: trimmedUser,
-                    email: trimmedEmail,
-                    nativeLanguage: 'en',
-                    purpose: '',
-                    dailyGoal: 10,
-                    age: 0,
-                    ageBracket: '',
-                    learningLevel: '',
-                    gender: '',
-                  });
+
+                  const user = await createUser(username, email, password);
+                  await setAppState('last_logged_in_user_id', String(user.id));
+                  updateAuth(userRowToAuth(user));
                   navigation.navigate('OnboardingStack');
                 } finally {
                   setBusy(false);
@@ -233,7 +238,7 @@ export function AuthScreen() {
               <Text style={styles.backLinkText}>← Back</Text>
             </Pressable>
             <Text style={styles.title}>Continue Learning</Text>
-            <Text style={styles.subtitle}>Type the email or username you used when you joined.</Text>
+            <Text style={styles.subtitle}>Sign in with your email or username.</Text>
 
             {errorMessage ? (
               <View style={styles.errorBox}>
@@ -255,6 +260,20 @@ export function AuthScreen() {
               editable={!busy}
             />
 
+            <Text style={styles.fieldLabel}>Password</Text>
+            <TextInput
+              value={signInPassword}
+              onChangeText={(t) => {
+                resetFormErrors();
+                setSignInPassword(t);
+              }}
+              placeholder="Your password"
+              secureTextEntry
+              style={styles.input}
+              placeholderTextColor={INK_MUTED}
+              editable={!busy}
+            />
+
             <Pressable
               style={[styles.submitPrimary, !canSignIn && styles.submitDisabled]}
               disabled={!canSignIn}
@@ -263,21 +282,34 @@ export function AuthScreen() {
                 resetFormErrors();
                 setBusy(true);
                 try {
-                  await migrateOnboardingFlags();
                   const user = await findUserByEmailOrUsername(signInIdentifier);
                   if (!user) {
-                    setErrorMessage('No account matches that email or username on this device.');
+                    setErrorMessage('No account matches that email or username.');
                     return;
                   }
-                  updateAuth(storedUserToAuthPatch(user));
-                  await AsyncStorage.setItem(LAST_USER_KEY, user.email.trim().toLowerCase());
-                  const isRTL = user.nativeLanguage === 'fa';
+
+                  // Allow migrated users (no password set) to sign in and set a password later
+                  const isMigrated = user.password_hash === '__migrated_no_password__';
+                  if (!isMigrated) {
+                    const valid = await verifyPassword(user, signInPassword);
+                    if (!valid) {
+                      setErrorMessage('Incorrect password.');
+                      return;
+                    }
+                  }
+
+                  const bookmark = await getBookmark(user.id);
+                  updateAuth(userRowToAuth(user, bookmark));
+                  await setAppState('last_logged_in_user_id', String(user.id));
+
+                  const isRTL = user.native_language === 'fa';
                   I18nManager.allowRTL(isRTL);
                   I18nManager.forceRTL(isRTL);
-                  if (user.onboardingComplete) {
+
+                  if (user.onboarding_complete) {
                     navigation.navigate('MainTabNavigator', {
-                      resumeLessonId: user.last_visited_lesson_id,
-                      resumeSectionIndex: user.last_visited_section_index,
+                      resumeLessonId: bookmark?.last_lesson_id,
+                      resumeSectionIndex: bookmark?.last_section_index,
                     });
                   } else {
                     navigation.navigate('OnboardingStack');

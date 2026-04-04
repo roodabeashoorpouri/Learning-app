@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { MainTabsProfileIcon } from './tabIcons';
+import { MainTabsStudentBookIcon, MainTabsWorkbookIcon, MainTabsProfileIcon } from './tabIcons';
 import { StudentBookScreen } from '../../screens/StudentBookScreen';
 import { WorkbookScreen } from '../../screens/WorkbookScreen';
 import { ProfileScreen } from '../../screens/ProfileScreen';
@@ -26,21 +26,23 @@ export function MainTabNavigator() {
       <Tab.Screen
         name="StudentBook"
         component={StudentBookScreen}
-        options={{ 
-          title: 'Student Book', 
+        options={{
+          title: 'Student Book',
           tabBarLabel: 'Student Book',
           headerStyle: { backgroundColor: '#f7f4ec' },
           headerTitleStyle: { color: '#0f2744', fontWeight: '800' },
+          tabBarIcon: MainTabsStudentBookIcon,
         }}
       />
       <Tab.Screen
         name="Workbook"
         component={WorkbookScreen}
-        options={{ 
-          title: 'Workbook', 
+        options={{
+          title: 'Workbook',
           tabBarLabel: 'Workbook',
           headerStyle: { backgroundColor: '#f7f4ec' },
           headerTitleStyle: { color: '#0f2744', fontWeight: '800' },
+          tabBarIcon: MainTabsWorkbookIcon,
         }}
       />
       <Tab.Screen

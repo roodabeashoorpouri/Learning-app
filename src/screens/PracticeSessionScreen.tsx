@@ -31,9 +31,8 @@ export function PracticeSessionScreen({ route, navigation }: Props) {
   const [selectedAnswer, setSelectedAnswer] = useState<any>(null);
 
   // Reset selection when moving to next exercise
-  useEffect(() => {
-    setSelectedAnswer(null);
-  }, [state.index]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setSelectedAnswer(null); }, [state.index]);
 
   // Auto-complete for match_pairs: when all pairs matched, auto-check
   useEffect(() => {

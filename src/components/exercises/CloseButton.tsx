@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Pressable, StyleSheet, Text } from 'react-native';
+import { Alert, Platform, Pressable, StyleSheet, Text } from 'react-native';
 
 const INK_MUTED = '#2d4a66';
 
@@ -9,6 +9,12 @@ type Props = {
 
 export function CloseButton({ onClose }: Props) {
   const handlePress = () => {
+    if (Platform.OS === 'web') {
+      if (window.confirm('Leave practice?\nYour progress in this section will not be saved.')) {
+        onClose();
+      }
+      return;
+    }
     Alert.alert(
       'Leave practice?',
       'Your progress in this section will not be saved.',

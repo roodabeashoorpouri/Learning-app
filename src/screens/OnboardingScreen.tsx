@@ -9,7 +9,7 @@ import {
   type LearningLevel,
   type NativeLanguage,
 } from '../context/AuthContext';
-import { updateStoredUser } from '../storage/registeredUsers';
+import { updateUser, findUserById } from '../lib/api';
 
 const ACCENT_SELECTED = 'border-blue-600 bg-blue-600';
 const ACCENT_UNSELECTED = 'border-slate-200 bg-white';
@@ -134,16 +134,14 @@ const coachStyles = StyleSheet.create({
 
 export function OnboardingScreen() {
   const navigation = useNavigation<any>();
-  const { nativeLanguage: authNativeLanguage, updateAuth, email: authEmail } = useAuth();
+  const { nativeLanguage: authNativeLanguage, updateAuth, userId } = useAuth();
 
   /** Defensive guard: skip onboarding if already complete */
   useEffect(() => {
     async function checkComplete() {
-      if (!authEmail) return;
-      const { getRegisteredUsers } = await import('../storage/registeredUsers');
-      const users = await getRegisteredUsers();
-      const user = users.find((u) => u.email.trim().toLowerCase() === authEmail.trim().toLowerCase());
-      if (user?.onboardingComplete) {
+      if (!userId) return;
+      const user = await findUserById(userId);
+      if (user?.onboarding_complete) {
         navigation.replace('MainTabNavigator');
       }
     }
@@ -202,7 +200,7 @@ export function OnboardingScreen() {
 
   const completeOnboarding = useCallback(
     async (finalGender: Gender) => {
-      if (savingRef.current) return;
+      if (savingRef.current || !userId) return;
       savingRef.current = true;
       const ageNum = ageBracketToNumber(ageBracket);
       const authPatch = {
@@ -216,16 +214,21 @@ export function OnboardingScreen() {
       };
       try {
         updateAuth(authPatch);
-        await updateStoredUser(authEmail, {
-          ...authPatch,
-          onboardingComplete: true,
+        await updateUser(userId, {
+          native_language: nativeLanguage,
+          learning_purpose: purpose,
+          daily_goal: 10,
+          age_bracket: ageBracket,
+          learning_level: learningLevel,
+          gender: finalGender,
+          onboarding_complete: 1,
         });
         navigation.replace('MainTabNavigator');
       } finally {
         savingRef.current = false;
       }
     },
-    [ageBracket, authEmail, learningLevel, nativeLanguage, navigation, purpose, updateAuth],
+    [ageBracket, userId, learningLevel, nativeLanguage, navigation, purpose, updateAuth],
   );
 
   const scheduleAdvanceFromStep = useCallback(
@@ -242,8 +245,6 @@ export function OnboardingScreen() {
     },
     [clearAdvanceTimer, completeOnboarding, goTo],
   );
-
-  const coaching = STEP_COACHING[stepIndex] ?? STEP_COACHING[0];
 
   return (
     <View className="flex-1 bg-slate-50 px-5 pt-6">
@@ -287,7 +288,7 @@ export function OnboardingScreen() {
                   onPress={() => {
                     setNativeLanguage('en');
                     updateAuth({ nativeLanguage: 'en' });
-                    void updateStoredUser(authEmail, { nativeLanguage: 'en' });
+                    if (userId) void updateUser(userId, { native_language: 'en' });
                     scheduleAdvanceFromStep(0);
                   }}
                   className={`rounded-2xl border p-4 ${
@@ -312,7 +313,7 @@ export function OnboardingScreen() {
                   onPress={() => {
                     setNativeLanguage('fa');
                     updateAuth({ nativeLanguage: 'fa' });
-                    void updateStoredUser(authEmail, { nativeLanguage: 'fa' });
+                    if (userId) void updateUser(userId, { native_language: 'fa' });
                     scheduleAdvanceFromStep(0);
                   }}
                   className={`rounded-2xl border p-4 ${

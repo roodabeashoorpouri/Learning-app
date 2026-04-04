@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
 export type NativeLanguage = 'en' | 'fa';
 export type Gender = 'male' | 'female' | 'other' | '';
@@ -6,6 +6,8 @@ export type AgeBracket = '' | '3-12' | '12-25' | '25-45' | '45+';
 export type LearningLevel = '' | 'beginner' | 'intermediate' | 'advanced';
 
 export type AuthState = {
+  /** SQLite user id — 0 means not logged in */
+  userId: number;
   username: string;
   email: string;
   nativeLanguage: NativeLanguage;
@@ -22,9 +24,11 @@ export type AuthState = {
 export type AuthContextValue = AuthState & {
   updateAuth: (updates: Partial<AuthState>) => void;
   resetAuth: () => void;
+  isLoggedIn: boolean;
 };
 
 const initialAuthState: AuthState = {
+  userId: 0,
   username: '',
   email: '',
   nativeLanguage: 'en',
@@ -43,13 +47,20 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [auth, setAuth] = useState<AuthState>(initialAuthState);
 
+  const updateAuth = useCallback(
+    (updates: Partial<AuthState>) => setAuth((prev) => ({ ...prev, ...updates })),
+    [],
+  );
+  const resetAuth = useCallback(() => setAuth(initialAuthState), []);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       ...auth,
-      updateAuth: (updates) => setAuth((prev) => ({ ...prev, ...updates })),
-      resetAuth: () => setAuth(initialAuthState),
+      updateAuth,
+      resetAuth,
+      isLoggedIn: auth.userId > 0,
     }),
-    [auth],
+    [auth, updateAuth, resetAuth],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -62,4 +73,3 @@ export function useAuth() {
   }
   return ctx;
 }
-
